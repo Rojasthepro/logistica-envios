@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Error')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: cabecera('')}"></header>
+
+<main class="contenedor contenedor--angosto">
+    <section class="panel panel--error">
+        <span class="insignia-modulo" th:text="${status != null} ? 'Código HTTP ' + ${status} : 'Aviso del Sistema'">Error</span>
+        <h1 th:text="${status == 404} ? 'Página no encontrada' : 'Ocurrió un error'">Error</h1>
+        <p class="alerta alerta--error"
+           th:text="${status == 404} ? 'El recurso solicitado no existe o fue trasladado.' : 'No fue posible completar la operación. Intente de nuevo.'"></p>
+        <div class="botones">
+            <a class="boton" th:href="@{/recolecciones/nueva}">Ir a Nueva recolección</a>
+            <a class="boton boton--secundario" th:href="@{/remitentes}">Ver remitentes</a>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: pie}"></footer>
+</body>
+</html>

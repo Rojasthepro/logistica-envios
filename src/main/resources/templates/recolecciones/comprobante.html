@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Comprobante ' + ${recoleccion.numeroGuia})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: cabecera('recolecciones')}"></header>
+
+<main class="contenedor">
+    <div class="titulo-fila no-imprimir">
+        <div>
+            <span class="insignia-modulo">CU-03 · Manifiesto de Transporte</span>
+            <h1>Comprobante de recolección</h1>
+        </div>
+        <div class="botones-cabecera">
+            <button type="button" class="boton boton--secundario" onclick="window.print()">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                <span>Imprimir guía</span>
+            </button>
+            <a class="boton" th:href="@{/recolecciones/nueva}">+ Nueva recolección</a>
+        </div>
+    </div>
+
+    <div class="alerta alerta--exito no-imprimir">
+        <strong>Orden confirmada y liquidada exitosamente.</strong>
+        Los paquetes cambiaron a estado <code>RECOGIDO</code> y el mensajero asignado pasó a <code>EN_RUTA</code> bajo transacción atómica.
+    </div>
+
+    <section class="panel comprobante">
+        <div class="comprobante__encabezado">
+            <div class="guia">
+                <span class="nota">Número oficial de guía (RN-08)</span>
+                <div class="guia__linea">
+                    <strong th:text="${recoleccion.numeroGuia}">GUIA-000001</strong>
+                    <span class="etiqueta etiqueta--ok" th:text="${recoleccion.estado}">REALIZADA</span>
+                </div>
+            </div>
+            <div class="guia-resumen-costo">
+                <span class="nota">Total liquidado (RN-06)</span>
+                <strong class="costo" th:text="|$ ${#numbers.formatDecimal(recoleccion.costoTotal, 1, 'POINT', 0, 'COMMA')}|">$ 0</strong>
+                <span class="nota" th:text="|${#lists.size(recoleccion.paquetes)} paquete(s) recogido(s)|"></span>
+            </div>
+        </div>
+
+        <div class="flujo-estados" aria-label="Trazabilidad de estados">
+            <div class="flujo-paso flujo-paso--completado">
+                <span class="flujo-punto">✓</span>
+                <span>Reglas RN-01 a RN-07 validadas</span>
+            </div>
+            <div class="flujo-paso flujo-paso--completado">
+                <span class="flujo-punto">✓</span>
+                <span>Guía consecutiva generada</span>
+            </div>
+            <div class="flujo-paso flujo-paso--completado">
+                <span class="flujo-punto">✓</span>
+                <span>Paquetes en estado <strong>RECOGIDO</strong></span>
+            </div>
+            <div class="flujo-paso flujo-paso--completado">
+                <span class="flujo-punto">✓</span>
+                <span>Mensajero en estado <strong>EN_RUTA</strong></span>
+            </div>
+        </div>
+
+        <dl class="datos datos--comprobante">
+            <div>
+                <dt>Remitente</dt>
+                <dd th:text="|${recoleccion.remitente.nombre} (${recoleccion.remitente.documento})|"></dd>
+            </div>
+            <div>
+                <dt>Dirección de recolección</dt>
+                <dd th:text="${recoleccion.direccionRecoleccion}"></dd>
+            </div>
+            <div>
+                <dt>Mensajero asignado</dt>
+                <dd>
+                    <span th:text="${recoleccion.mensajero.nombre}"></span>
+                    <span class="etiqueta etiqueta--info" th:text="${recoleccion.mensajero.estado}"></span>
+                </dd>
+            </div>
+            <div>
+                <dt>Fecha y hora de orden</dt>
+                <dd th:text="${#temporals.format(recoleccion.fechaHora, 'dd/MM/yyyy HH:mm')}"></dd>
+            </div>
+            <div>
+                <dt>Operador responsable (RN-08)</dt>
+                <dd><code th:text="${recoleccion.usuarioOperador}"></code></dd>
+            </div>
+            <div>
+                <dt>Sello de tiempo inmutable</dt>
+                <dd><code th:text="${#temporals.format(recoleccion.selloTiempo, 'dd/MM/yyyy HH:mm:ss')}"></code></dd>
+            </div>
+        </dl>
+    </section>
+
+    <section class="panel">
+        <div class="panel__cabecera">
+            <div>
+                <h2>Desglose de paquetes y liquidación tarifaria (RN-06)</h2>
+                <p class="nota">El peso facturable corresponde al mayor entre el peso real y el peso volumétrico (alto × ancho × largo / 5000).</p>
+            </div>
+        </div>
+
+        <div class="tabla-contenedor">
+            <table class="tabla">
+                <thead>
+                <tr>
+                    <th>Paquete</th>
+                    <th>Descripción</th>
+                    <th>Destinatario</th>
+                    <th>Zona destino</th>
+                    <th class="num">Peso real</th>
+                    <th class="num">Peso facturable</th>
+                    <th class="num">Costo liquidado</th>
+                    <th>Estado</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="p : ${recoleccion.paquetes}">
+                    <td><span class="codigo-paquete" th:text="${p.codigo}"></span></td>
+                    <td th:text="${p.descripcion}"></td>
+                    <td th:text="${p.destinatario.nombre}"></td>
+                    <td>
+                        <span th:text="${p.destinatario.zona.nombre}"></span>
+                        <small class="nota bloque-nota"
+                               th:text="|Base $ ${#numbers.formatDecimal(p.destinatario.zona.tarifaBase, 1, 'POINT', 0, 'COMMA')} + $ ${#numbers.formatDecimal(p.destinatario.zona.valorPorKg, 1, 'POINT', 0, 'COMMA')}/kg|"></small>
+                    </td>
+                    <td class="num" th:text="|${#numbers.formatDecimal(p.pesoKg, 1, 'POINT', 2, 'COMMA')} kg|"></td>
+                    <td class="num">
+                        <strong th:text="|${#numbers.formatDecimal(pesosFacturables[p.idPaquete], 1, 'POINT', 2, 'COMMA')} kg|"></strong>
+                        <span class="etiqueta etiqueta--info etiqueta--bloque"
+                              th:if="${pesosFacturables[p.idPaquete].compareTo(p.pesoKg) > 0}">Volumétrico</span>
+                    </td>
+                    <td class="num celda-costo" th:text="|$ ${#numbers.formatDecimal(costos[p.idPaquete], 1, 'POINT', 0, 'COMMA')}|"></td>
+                    <td><span class="etiqueta etiqueta--ok" th:text="${p.estado}"></span></td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th colspan="6" class="num">Costo total liquidado</th>
+                    <th class="num costo-total-tabla" th:text="|$ ${#numbers.formatDecimal(recoleccion.costoTotal, 1, 'POINT', 0, 'COMMA')}|"></th>
+                    <th></th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: pie}"></footer>
+</body>
+</html>

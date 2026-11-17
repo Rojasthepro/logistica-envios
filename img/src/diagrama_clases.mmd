@@ -1,0 +1,97 @@
+classDiagram
+    class Remitente {
+        +Long idRemitente
+        +String nombre
+        +String documento
+        +String telefono
+        +String direccion
+        +String ciudad
+        +EstadoRemitente estado
+        +isHabilitado() boolean
+    }
+
+    class EstadoRemitente {
+        <<enumeration>>
+        ACTIVO
+        INACTIVO
+    }
+
+    class Paquete {
+        +Long idPaquete
+        +String descripcion
+        +BigDecimal pesoKg
+        +Integer altoCm
+        +Integer anchoCm
+        +Integer largoCm
+        +BigDecimal valorDeclarado
+        +EstadoPaquete estado
+        +getCodigo() String
+        +getSumaDimensionesCm() int
+    }
+
+    class EstadoPaquete {
+        <<enumeration>>
+        REGISTRADO
+        RECOGIDO
+        EN_RUTA
+        ENTREGADO
+    }
+
+    class Recoleccion {
+        +Long idRecoleccion
+        +String numeroGuia
+        +LocalDateTime fechaHora
+        +String direccionRecoleccion
+        +BigDecimal costoTotal
+        +EstadoRecoleccion estado
+        +String usuarioOperador
+        +LocalDateTime selloTiempo
+    }
+
+    class EstadoRecoleccion {
+        <<enumeration>>
+        PROGRAMADA
+        REALIZADA
+        FALLIDA
+    }
+
+    class Mensajero {
+        +Long idMensajero
+        +String nombre
+        +String documento
+        +String zona
+        +EstadoMensajero estado
+    }
+
+    class EstadoMensajero {
+        <<enumeration>>
+        DISPONIBLE
+        EN_RUTA
+    }
+
+    class Destinatario {
+        +Long idDestinatario
+        +String nombre
+        +String telefono
+        +String direccion
+        +String ciudad
+    }
+
+    class ZonaCobertura {
+        +Long idZona
+        +String nombre
+        +boolean cubierta
+        +BigDecimal tarifaBase
+        +BigDecimal valorPorKg
+    }
+
+    Remitente "1" --> "0..*" Paquete : registra
+    Remitente "1" --> "0..*" Recoleccion : solicita
+    Mensajero "1" --> "0..*" Recoleccion : ejecuta
+    Recoleccion "1" o-- "1..*" Paquete : agrupa
+    Paquete "0..*" --> "1" Destinatario : consignado a
+    Destinatario "0..*" --> "1" ZonaCobertura : ubicado en
+    Remitente ..> EstadoRemitente
+    Paquete ..> EstadoPaquete
+    Recoleccion ..> EstadoRecoleccion
+    Mensajero ..> EstadoMensajero
