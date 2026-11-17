@@ -1,0 +1,47 @@
+sequenceDiagram
+    autonumber
+    actor Op as Operador
+    participant UI as Pantalla nueva.html
+    participant Api as ApiController
+    participant Ctrl as RecoleccionController
+    participant Svc as RecoleccionService
+    participant BD as Repositorios / BD H2
+
+    Op->>UI: Escribe documento o nombre del remitente
+    UI->>Api: GET /api/remitentes?query=
+    Api->>BD: RemitenteService.buscar(query)
+    BD-->>UI: Lista de remitentes
+    Op->>UI: Selecciona remitente
+    UI->>Api: GET /api/paquetes?remitenteId=
+    Api->>Svc: paquetesPendientes(remitenteId)
+    Svc->>BD: paquetes REGISTRADO sin recolección
+    Svc-->>UI: Paquetes con peso facturable y costo (RN-06)
+    Op->>UI: Marca paquetes, elige mensajero y pulsa Confirmar
+    UI->>Ctrl: POST /recolecciones (SolicitudRecoleccion)
+    Ctrl->>Svc: confirmarRecoleccion(solicitud, "operador.demo")
+    activate Svc
+    Svc->>BD: findById(remitenteId)
+    Svc->>Svc: validarRemitenteHabilitado() [RN-03]
+    Svc->>BD: findAllById(paqueteIds)
+    Svc->>Svc: validarAlMenosUnPaquete() [RN-04]
+    Svc->>Svc: validarPaquetesPendientes() [RN-05]
+    Svc->>Svc: validarPesoYMedidas() [RN-01]
+    Svc->>Svc: validarCoberturaDestinos() [RN-02]
+    Svc->>BD: findById(mensajeroId)
+    Svc->>Svc: validarMensajeroAsignable() [RN-07]
+    alt Alguna regla falla
+        Svc-->>Ctrl: NegocioException("RN-xx: motivo")
+        Note over Svc,BD: rollback, no se guarda nada
+        Ctrl-->>UI: Misma pantalla con el error y los datos digitados
+    else Todas las reglas se cumplen
+        Svc->>Svc: calcularCostoTotal() [RN-06]
+        Svc->>BD: findUltimoNumeroGuia()
+        Svc->>Svc: registrarGuiaYTrazabilidad() [RN-08]
+        Svc->>BD: save(recoleccion REALIZADA)
+        Svc->>Svc: paquetes = RECOGIDO, mensajero = EN_RUTA
+        Svc-->>Ctrl: Recoleccion
+        Ctrl-->>UI: redirect /recolecciones/{id}
+        UI->>Ctrl: GET /recolecciones/{id}
+        Ctrl-->>Op: Comprobante con número de guía y costo
+    end
+    deactivate Svc

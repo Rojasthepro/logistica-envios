@@ -3,71 +3,51 @@
 <head th:replace="~{fragments/layout :: head(${remitente.idRemitente == null} ? 'Nuevo remitente' : 'Editar remitente')}"></head>
 <body>
 <header th:replace="~{fragments/layout :: cabecera('remitentes')}"></header>
-
 <main class="contenedor contenedor--angosto">
-    <nav class="migas" aria-label="Ruta de navegación">
-        <a th:href="@{/remitentes}">Remitentes</a>
-        <span aria-hidden="true">/</span>
-        <span th:text="${remitente.idRemitente == null} ? 'Nuevo remitente' : 'Editar remitente'"></span>
-    </nav>
-
-    <div class="encabezado-pagina encabezado-pagina--compacto">
-        <div>
-            <span class="insignia-modulo">CU-02 · Ficha de Remitente</span>
-            <h1 th:text="${remitente.idRemitente == null} ? 'Nuevo remitente' : 'Editar remitente'">Remitente</h1>
-            <p class="subtitulo-pagina">
-                Recuerde que para programar recolecciones (RN-03), el remitente debe estar <code>ACTIVO</code> y contar con documento, teléfono y dirección.
-            </p>
-        </div>
-    </div>
+    <h1 th:text="${remitente.idRemitente == null} ? 'Nuevo remitente' : 'Editar remitente'">Remitente</h1>
+    <p class="nota">Para poder recoger paquetes (RN-03) el remitente debe estar ACTIVO y tener documento, teléfono y dirección.</p>
 
     <form class="formulario" method="post" th:object="${remitente}" novalidate
           th:action="${remitente.idRemitente == null} ? @{/remitentes} : @{/remitentes/{id}(id=${remitente.idRemitente})}">
 
-        <label>Nombre completo o razón social *
-            <input type="text" th:field="*{nombre}" maxlength="120" placeholder="Ej. Laura Gómez Rincón" th:errorclass="invalido">
+        <label>Nombre *
+            <input type="text" th:field="*{nombre}" maxlength="120" th:errorclass="invalido">
             <small class="error" th:errors="*{nombre}"></small>
         </label>
 
-        <div class="rejilla-dos">
-            <label>Documento / NIT *
-                <input type="text" th:field="*{documento}" maxlength="20" placeholder="Ej. 1010101010" th:errorclass="invalido">
-                <small class="error" th:errors="*{documento}"></small>
-            </label>
+        <label>Documento *
+            <input type="text" th:field="*{documento}" maxlength="20" th:errorclass="invalido">
+            <small class="error" th:errors="*{documento}"></small>
+        </label>
 
-            <label>Teléfono de contacto
-                <input type="text" th:field="*{telefono}" inputmode="numeric" maxlength="10" placeholder="7 a 10 dígitos"
-                       th:errorclass="invalido">
-                <small class="error" th:errors="*{telefono}"></small>
-            </label>
-        </div>
+        <label>Teléfono
+            <input type="text" th:field="*{telefono}" inputmode="numeric" maxlength="10" placeholder="7 a 10 dígitos"
+                   th:errorclass="invalido">
+            <small class="error" th:errors="*{telefono}"></small>
+        </label>
 
-        <label>Dirección predeterminada de recolección
-            <input type="text" th:field="*{direccion}" maxlength="150" placeholder="Ej. Calle 45 # 12-30" th:errorclass="invalido">
+        <label>Dirección
+            <input type="text" th:field="*{direccion}" maxlength="150" th:errorclass="invalido">
             <small class="error" th:errors="*{direccion}"></small>
         </label>
 
-        <div class="rejilla-dos">
-            <label>Ciudad
-                <input type="text" th:field="*{ciudad}" maxlength="60" placeholder="Ej. Bogotá o Medellín" th:errorclass="invalido">
-                <small class="error" th:errors="*{ciudad}"></small>
-            </label>
+        <label>Ciudad
+            <input type="text" th:field="*{ciudad}" maxlength="60" th:errorclass="invalido">
+            <small class="error" th:errors="*{ciudad}"></small>
+        </label>
 
-            <label>Estado operativo *
-                <select th:field="*{estado}" th:errorclass="invalido">
-                    <option th:each="e : ${estados}" th:value="${e}" th:text="${e}"></option>
-                </select>
-                <small class="error" th:errors="*{estado}"></small>
-            </label>
-        </div>
+        <label>Estado *
+            <select th:field="*{estado}" th:errorclass="invalido">
+                <option th:each="e : ${estados}" th:value="${e}" th:text="${e}"></option>
+            </select>
+            <small class="error" th:errors="*{estado}"></small>
+        </label>
 
         <div class="botones">
-            <button type="submit" class="boton">Guardar remitente</button>
+            <button type="submit" class="boton">Guardar</button>
             <a class="boton boton--secundario" th:href="@{/remitentes}">Cancelar</a>
         </div>
     </form>
 </main>
-
-<footer th:replace="~{fragments/layout :: pie}"></footer>
 </body>
 </html>

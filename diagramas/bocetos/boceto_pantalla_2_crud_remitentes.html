@@ -1,0 +1,22 @@
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"></head><body>
+<h1>Boceto 2 — CRUD de Remitente (CU-02)</h1>
+<div class="sub">Rutas: /remitentes (listado) y /remitentes/nuevo, /remitentes/{id}/editar (formulario)</div>
+<div class="caja"><div class="tit">2A. Listado de remitentes</div>
+ <div class="fila"><div class="campo" style="min-width:380px">Buscar por nombre o documento...</div><div class="btn">Buscar</div><div style="flex:1"></div><div class="btn">+ Nuevo remitente</div></div>
+ <div class="err">[Mensaje] ej. "No se puede eliminar a Jorge Castaño Vélez porque tiene 1 recolección asociada"</div>
+ <table><tr><th>Nombre</th><th>Documento</th><th>Teléfono</th><th>Dirección</th><th>Ciudad</th><th>Estado</th><th>Acciones</th></tr>
+ <tr><td>Laura Gómez Rincón</td><td>1010101010</td><td>3001234567</td><td>Calle 45 # 12-30</td><td>Bogotá</td><td>ACTIVO</td><td>[Editar] [Eliminar]</td></tr>
+ <tr><td>Pedro Salazar</td><td>1111111111</td><td>3201112233</td><td>Calle 26 # 50-12</td><td>Bogotá</td><td>INACTIVO</td><td>[Editar] [Eliminar]</td></tr>
+ <tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr></table>
+ <div class="fila" style="justify-content:center;font-size:12px">&lt; Anterior &nbsp; Página 1 de 2 &nbsp; Siguiente &gt; <span class="at">(10 por página)</span></div>
+ <div class="nota">Estado vacío: "No se encontraron remitentes para el criterio buscado." · Eliminar pide confirmación antes de borrar</div></div>
+<div class="caja"><div class="tit">2B. Formulario crear / editar</div>
+ <div class="fila"><div><div class="campo" style="min-width:300px">Nombre *</div><div class="at">Remitente.nombre (obligatorio)</div></div>
+ <div><div class="campo">Documento *</div><div class="at">Remitente.documento (obligatorio, único)</div></div></div>
+ <div class="fila"><div><div class="campo">Teléfono</div><div class="at">Remitente.telefono (7 a 10 dígitos)</div></div>
+ <div><div class="campo" style="min-width:300px">Dirección</div><div class="at">Remitente.direccion</div></div></div>
+ <div class="fila"><div><div class="campo">Ciudad</div><div class="at">Remitente.ciudad</div></div>
+ <div><div class="campo">Estado  v (ACTIVO / INACTIVO)</div><div class="at">Remitente.estado</div></div></div>
+ <div class="nota">Error junto al campo, ej. bajo Teléfono: "El teléfono debe ser numérico de 7 a 10 dígitos"</div>
+ <div class="fila"><div class="btn">Guardar</div><div class="btn" style="background:#fff">Cancelar</div><span class="at">POST /remitentes · POST /remitentes/{id}</span></div></div>
+</body></html>

@@ -3,113 +3,72 @@
 <head th:replace="~{fragments/layout :: head('Remitentes')}"></head>
 <body>
 <header th:replace="~{fragments/layout :: cabecera('remitentes')}"></header>
-
 <main class="contenedor">
-    <div class="encabezado-pagina">
-        <div>
-            <span class="insignia-modulo">CU-02 · Gestión de Clientes (CRUD)</span>
-            <h1>Directorio de remitentes</h1>
-            <p class="subtitulo-pagina">
-                Administre los remitentes registrados, valide sus datos de contacto (RN-03) e inicie órdenes de recolección.
-            </p>
-        </div>
-        <div class="botones-cabecera">
-            <a class="boton" th:href="@{/remitentes/nuevo}">+ Nuevo remitente</a>
-        </div>
+    <div class="titulo-fila">
+        <h1>Remitentes</h1>
+        <a class="boton" th:href="@{/remitentes/nuevo}">+ Nuevo remitente</a>
     </div>
 
     <p class="alerta alerta--exito" th:if="${exito}" th:text="${exito}"></p>
     <p class="alerta alerta--error" th:if="${error}" th:text="${error}"></p>
 
-    <section class="panel">
-        <div class="barra-herramientas">
-            <form class="buscador" method="get" th:action="@{/remitentes}">
-                <div class="input-icono buscador__input">
-                    <svg class="icono-input" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                    <input type="search" name="q" th:value="${q}" placeholder="Buscar por nombre o documento..." aria-label="Buscar">
-                </div>
-                <button type="submit" class="boton boton--secundario">Buscar</button>
-                <a class="boton boton--secundario" th:if="${!#strings.isEmpty(q)}" th:href="@{/remitentes}">Limpiar</a>
-            </form>
-            <span class="etiqueta etiqueta--info" th:if="${pagina.hasContent()}"
-                  th:text="|${pagina.totalElements} remitente(s) registrado(s)|"></span>
-        </div>
+    <div class="titulo-fila">
+        <form class="buscador" method="get" th:action="@{/remitentes}">
+            <input type="search" name="q" th:value="${q}" placeholder="Buscar por nombre o documento" aria-label="Buscar">
+            <button type="submit" class="boton boton--secundario">Buscar</button>
+            <a class="boton boton--secundario" th:if="${!#strings.isEmpty(q)}" th:href="@{/remitentes}">Limpiar</a>
+        </form>
+        <span class="nota" th:if="${pagina.hasContent()}" th:text="|${pagina.totalElements} remitente(s)|"></span>
+    </div>
 
-        <div class="tabla-contenedor" th:if="${pagina.hasContent()}">
-            <table class="tabla">
-                <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Documento</th>
-                    <th>Teléfono</th>
-                    <th>Dirección</th>
-                    <th>Ciudad</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="r : ${pagina.content}">
-                    <td>
-                        <div class="celda-remitente">
-                            <span class="avatar-mini"
-                                  th:classappend="${r.estado.name() != 'ACTIVO'} ? 'avatar-mini--inactivo'"
-                                  th:text="${#strings.substring(r.nombre, 0, 1)}">R</span>
-                            <strong th:text="${r.nombre}"></strong>
-                        </div>
-                    </td>
-                    <td><code class="codigo-doc" th:text="${r.documento}"></code></td>
-                    <td>
-                        <span th:if="${!#strings.isEmpty(r.telefono)}" th:text="${r.telefono}"></span>
-                        <span th:if="${#strings.isEmpty(r.telefono)}" class="etiqueta etiqueta--mal" title="Requerido por RN-03 para recolectar">Sin teléfono</span>
-                    </td>
-                    <td>
-                        <span th:if="${!#strings.isEmpty(r.direccion)}" th:text="${r.direccion}"></span>
-                        <span th:if="${#strings.isEmpty(r.direccion)}" class="etiqueta etiqueta--mal" title="Requerido por RN-03 para recolectar">Sin dirección · RN-03</span>
-                    </td>
-                    <td>
-                        <span th:if="${!#strings.isEmpty(r.ciudad)}" class="etiqueta" th:text="${r.ciudad}"></span>
-                        <span th:if="${#strings.isEmpty(r.ciudad)}" class="nota">—</span>
-                    </td>
-                    <td>
-                        <span class="etiqueta"
-                              th:classappend="${r.estado.name() == 'ACTIVO'} ? 'etiqueta--ok' : 'etiqueta--mal'"
-                              th:text="${r.estado}"></span>
-                    </td>
-                    <td class="acciones">
-                        <a class="accion-chip accion-chip--primario"
-                           th:href="@{/recolecciones/nueva(remitenteId=${r.idRemitente})}"
-                           title="Iniciar recolección con este remitente">Recoger</a>
-                        <a class="accion-chip" th:href="@{/remitentes/{id}/editar(id=${r.idRemitente})}">Editar</a>
-                        <form method="post" th:action="@{/remitentes/{id}/eliminar(id=${r.idRemitente})}"
-                              th:data-nombre="${r.nombre}"
-                              onsubmit="return confirm('¿Eliminar al remitente ' + this.dataset.nombre + '? Esta acción no se puede deshacer.');">
-                            <input type="hidden" name="q" th:value="${q}">
-                            <input type="hidden" name="pagina" th:value="${pagina.number}">
-                            <button type="submit" class="enlace enlace--peligro">Eliminar</button>
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+    <table class="tabla" th:if="${pagina.hasContent()}">
+        <thead>
+        <tr>
+            <th>Nombre</th><th>Documento</th><th>Teléfono</th><th>Dirección</th>
+            <th>Ciudad</th><th>Estado</th><th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="r : ${pagina.content}">
+            <td th:text="${r.nombre}"></td>
+            <td th:text="${r.documento}"></td>
+            <td>
+                <span th:if="${!#strings.isEmpty(r.telefono)}" th:text="${r.telefono}"></span>
+                <span th:if="${#strings.isEmpty(r.telefono)}" class="texto-alerta" title="Requerido por RN-03 para recolectar">Sin teléfono</span>
+            </td>
+            <td>
+                <span th:if="${!#strings.isEmpty(r.direccion)}" th:text="${r.direccion}"></span>
+                <span th:if="${#strings.isEmpty(r.direccion)}" class="texto-alerta" title="Requerido por RN-03 para recolectar">Sin dirección</span>
+            </td>
+            <td th:text="${#strings.isEmpty(r.ciudad)} ? '—' : ${r.ciudad}"></td>
+            <td>
+                <span class="etiqueta"
+                      th:classappend="${r.estado.name() == 'ACTIVO'} ? 'etiqueta--ok' : 'etiqueta--mal'"
+                      th:text="${r.estado}"></span>
+            </td>
+            <td class="acciones">
+                <a th:href="@{/recolecciones/nueva(remitenteId=${r.idRemitente})}"
+                   title="Iniciar recolección con este remitente">Recoger</a>
+                <a th:href="@{/remitentes/{id}/editar(id=${r.idRemitente})}">Editar</a>
+                <form method="post" th:action="@{/remitentes/{id}/eliminar(id=${r.idRemitente})}"
+                      th:data-nombre="${r.nombre}"
+                      onsubmit="return confirm('¿Eliminar al remitente ' + this.dataset.nombre + '? Esta acción no se puede deshacer.');">
+                    <input type="hidden" name="q" th:value="${q}">
+                    <input type="hidden" name="pagina" th:value="${pagina.number}">
+                    <button type="submit" class="enlace enlace--peligro">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-        <p class="vacio" th:unless="${pagina.hasContent()}">No se encontraron remitentes para el criterio buscado.</p>
+    <p class="vacio" th:unless="${pagina.hasContent()}">No se encontraron remitentes para el criterio buscado.</p>
 
-        <nav class="paginacion" th:if="${pagina.totalPages > 1}" aria-label="Paginación de remitentes">
-            <a class="boton boton--secundario boton--pequeno" th:if="${pagina.hasPrevious()}"
-               th:href="@{/remitentes(q=${q},pagina=${pagina.number - 1})}">&laquo; Anterior</a>
-            <span class="paginacion__info"
-                  th:text="|Página ${pagina.number + 1} de ${pagina.totalPages} · ${pagina.totalElements} remitentes|"></span>
-            <a class="boton boton--secundario boton--pequeno" th:if="${pagina.hasNext()}"
-               th:href="@{/remitentes(q=${q},pagina=${pagina.number + 1})}">Siguiente &raquo;</a>
-        </nav>
-    </section>
+    <nav class="paginacion" th:if="${pagina.totalPages > 1}" aria-label="Paginación de remitentes">
+        <a th:if="${pagina.hasPrevious()}" th:href="@{/remitentes(q=${q},pagina=${pagina.number - 1})}">&laquo; Anterior</a>
+        <span th:text="|Página ${pagina.number + 1} de ${pagina.totalPages}|"></span>
+        <a th:if="${pagina.hasNext()}" th:href="@{/remitentes(q=${q},pagina=${pagina.number + 1})}">Siguiente &raquo;</a>
+    </nav>
 </main>
-
-<footer th:replace="~{fragments/layout :: pie}"></footer>
 </body>
 </html>

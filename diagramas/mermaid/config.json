@@ -1,0 +1,24 @@
+{
+  "theme": "neutral",
+  "flowchart": {
+    "curve": "stepBefore",
+    "wrappingWidth": 260,
+    "htmlLabels": true,
+    "useMaxWidth": false,
+    "rankSpacing": 30,
+    "nodeSpacing": 35,
+    "padding": 10
+  },
+  "class": {
+    "curve": "stepBefore",
+    "useMaxWidth": false
+  },
+  "sequence": {
+    "useMaxWidth": false,
+    "mirrorActors": false,
+    "actorMargin": 25,
+    "boxMargin": 6,
+    "messageMargin": 28,
+    "width": 130
+  }
+}

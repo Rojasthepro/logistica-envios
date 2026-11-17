@@ -161,3 +161,25 @@ src/main/resources/
 ├── templates/    Vistas Thymeleaf
 └── static/       estilos.css y recoleccion.js
 ```
+
+## Documentación y entrega
+
+```
+DOCUMENTO_ENTREGA_PROYECTO_GRUPAL.md   Documento fuente de la entrega
+img/                  Diagramas renderizados, bocetos y capturas que usa el documento
+diagramas/mermaid/    Fuentes .mmd (secuencia, actividad) + config.json (líneas en codo)
+diagramas/uml/        Diagramas de clases y casos de uso (SVG en HTML)
+diagramas/bocetos/    Bocetos de baja fidelidad de las dos pantallas (HTML)
+diagramas/drawio/     Mismos diagramas en draw.io (importables en Lucidchart)
+docs/                 Guion de la demo y evidencia de pruebas
+entrega/              PDF y ZIP generados para entregar
+scripts/              generar_entrega.py
+```
+
+Para regenerar los diagramas, bocetos, el PDF y el ZIP después de editar una fuente o el documento:
+
+```bash
+python3 scripts/generar_entrega.py
+```
+
+Necesita `chromium`, `npx` (Node), ImageMagick y `python-markdown-it-py`.

@@ -39,7 +39,7 @@ public class Paquete {
     @JoinColumn(name = "id_destinatario", nullable = false)
     private Destinatario destinatario;
 
-    // Recoleccion 1 — 1..* Paquete; es null mientras el paquete no ha sido recogido
+    // Recoleccion 0..1 — 1..* Paquete; es null mientras el paquete no ha sido recogido
     @ManyToOne
     @JoinColumn(name = "id_recoleccion")
     private Recoleccion recoleccion;

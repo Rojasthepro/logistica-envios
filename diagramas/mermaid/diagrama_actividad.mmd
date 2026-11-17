@@ -1,0 +1,43 @@
+flowchart TD
+    Inicio@{ shape: circle, label: " " } --> Buscar[Operador busca y selecciona el remitente]
+    Buscar --> Listar[Sistema lista los paquetes REGISTRADO del remitente]
+    Listar --> HayPaq{¿Tiene paquetes pendientes?}
+    HayPaq -- No --> Vacio[Mostrar estado vacío:<br>sin paquetes pendientes]
+    Vacio --> FinV@{ shape: circle, label: "●" }
+    HayPaq -- Sí --> Marcar[Operador marca paquetes,<br>elige mensajero y dirección]
+    Marcar --> Confirmar[Operador pulsa Confirmar recolección]
+    Confirmar --> RN03{RN-03: ¿Remitente ACTIVO<br>y con datos completos?}
+    RN03 -- No --> E03[Mostrar error RN-03,<br>no se guarda nada]
+    E03 --> F03@{ shape: circle, label: "●" }
+    RN03 -- Sí --> RN04{RN-04: ¿Al menos<br>un paquete marcado?}
+    RN04 -- No --> E04[Mostrar error RN-04,<br>no se guarda nada]
+    E04 --> F04@{ shape: circle, label: "●" }
+    RN04 -- Sí --> RN05{RN-05: ¿Paquetes REGISTRADO,<br>sin guía y del remitente?}
+    RN05 -- No --> E05[Mostrar error RN-05,<br>no se guarda nada]
+    E05 --> F05@{ shape: circle, label: "●" }
+    RN05 -- Sí --> RN01{RN-01: ¿Peso ≤ 30 kg y<br>alto+ancho+largo ≤ 150 cm?}
+    RN01 -- No --> E01[Mostrar error RN-01,<br>no se guarda nada]
+    E01 --> F01@{ shape: circle, label: "●" }
+    RN01 -- Sí --> RN02{RN-02: ¿Zonas de destino<br>con cobertura?}
+    RN02 -- No --> E02[Mostrar error RN-02,<br>no se guarda nada]
+    E02 --> F02@{ shape: circle, label: "●" }
+    RN02 -- Sí --> RN07{RN-07: ¿Mensajero DISPONIBLE<br>y zona = ciudad?}
+    RN07 -- No --> E07[Mostrar error RN-07,<br>no se guarda nada]
+    E07 --> F07@{ shape: circle, label: "●" }
+    RN07 -- Sí --> Costo[RN-06: Calcular costo total]
+    Costo --> Guia[RN-08: Generar guía GUIA-XXXXXX,<br>usuarioOperador y selloTiempo]
+    Guia --> Fork@{ shape: fork, label: " " }
+    Fork --> SP[Paquetes pasan a RECOGIDO]
+    Fork --> SM[Mensajero pasa a EN_RUTA]
+    Fork --> SR[Recolección queda REALIZADA]
+    SP --> Join@{ shape: fork, label: " " }
+    SM --> Join
+    SR --> Join
+    Join --> Guardar[Guardar todo en una sola transacción]
+    Guardar --> Comp[Mostrar comprobante de recolección]
+    Comp --> Fin@{ shape: circle, label: "●" }
+
+    classDef negro fill:#111,stroke:#111,color:#111,font-size:8px
+    classDef fin fill:#fff,stroke:#111,stroke-width:2px,color:#111,font-size:22px
+    class Inicio,Fork,Join negro
+    class FinV,F03,F04,F05,F01,F02,F07,Fin fin

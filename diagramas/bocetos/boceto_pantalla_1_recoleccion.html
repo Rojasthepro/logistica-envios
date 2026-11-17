@@ -1,0 +1,30 @@
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"></head><body>
+<h1>Boceto 1 — Registrar recolección (CU-01)</h1>
+<div class="sub">Ruta: /recolecciones/nueva &nbsp;·&nbsp; En gris pequeño: atributo del modelo que llena cada campo</div>
+<div class="err">[Mensaje de error de la regla] ej. "RN-01: el paquete PKG-7 pesa 35 kg y el máximo es 30 kg" <span class="at">(aparece solo si falla una regla RN-01..RN-07)</span></div>
+<div class="caja"><div class="tit">1. Remitente</div>
+ <div class="fila"><div class="campo" style="min-width:420px">Buscar por documento o nombre...</div><span class="at">GET /api/remitentes?query=</span></div>
+ <div class="dl">
+  <div>Nombre: ________ <div class="at">Remitente.nombre</div></div>
+  <div>Documento: ________ <div class="at">Remitente.documento</div></div>
+  <div>Teléfono: ________ <div class="at">Remitente.telefono</div></div>
+  <div>Dirección: ________ <div class="at">Remitente.direccion</div></div>
+  <div>Ciudad: ________ <div class="at">Remitente.ciudad</div></div>
+  <div>Estado: [ACTIVO] <div class="at">Remitente.estado (RN-03)</div></div>
+ </div></div>
+<div class="caja"><div class="tit">2. Paquetes pendientes (estado REGISTRADO, RN-05)</div>
+ <table><tr><th>[ ]</th><th>Código</th><th>Descripción</th><th>Peso</th><th>Alto+Ancho+Largo</th><th>Peso facturable</th><th>Destino / zona</th><th>Costo</th></tr>
+ <tr><td>[x]</td><td>PKG-1</td><td>Libros</td><td>2,5 kg</td><td>65 cm</td><td>2,5 kg</td><td>Bogotá (cubierta)</td><td>$ ...</td></tr>
+ <tr><td>[x]</td><td>PKG-3</td><td>Microondas</td><td>10 kg</td><td>120 cm</td><td>12 kg</td><td>Bogotá (cubierta)</td><td>$ ...</td></tr>
+ <tr><td>[ ]</td><td>PKG-7</td><td>Bulto café</td><td>35 kg (!)</td><td>140 cm</td><td>35 kg</td><td>Bogotá (cubierta)</td><td>$ ...</td></tr></table>
+ <div class="at" style="margin-top:4px">checkbox = SolicitudRecoleccion.paqueteIds (RN-04) · código = Paquete.codigo · peso = Paquete.pesoKg (RN-01) · medidas = altoCm+anchoCm+largoCm (RN-01) · destino = Destinatario.ciudad / ZonaCobertura.cubierta (RN-02) · costo (RN-06)</div>
+ <div class="nota">Estado vacío: "Este remitente no tiene paquetes pendientes de recolección"</div></div>
+<div class="caja"><div class="tit">3. Mensajero y dirección</div>
+ <div class="fila"><div><div class="campo">Mensajero disponible  v</div><div class="at">SolicitudRecoleccion.mensajeroId · Mensajero.estado = DISPONIBLE (RN-07)</div></div>
+ <div><div class="campo" style="min-width:300px">Calle 45 # 12-30, Bogotá</div><div class="at">Recoleccion.direccionRecoleccion (ciudad = Mensajero.zona, RN-07)</div></div></div></div>
+<div class="caja"><div class="fila" style="justify-content:space-between">
+ <div>Costo estimado: <b>$ 48.110</b><div class="at">Recoleccion.costoTotal (RN-06)</div></div>
+ <div>Paquetes seleccionados: <b>3</b><div class="at">RN-04</div></div>
+ <div><div class="btn">Confirmar recolección</div><div class="at">POST /recolecciones (RN-08)</div></div></div></div>
+<div class="nota">Al confirmar → Comprobante (GET /recolecciones/{id}): numeroGuia, fechaHora, remitente, mensajero, paquetes, costoTotal, usuarioOperador, selloTiempo</div>
+</body></html>

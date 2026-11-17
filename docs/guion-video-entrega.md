@@ -7,7 +7,7 @@ Duración objetivo: 4:30. Narración pendiente de grabar en Voice Studio. Grabar
 **Voz:** Hola. En este video presento el MVP del Sistema de Logística de Envíos, desarrollado con Java, Spring Boot, Thymeleaf y una base H2 en memoria. El alcance incluye el registro transaccional de recolecciones y la gestión de remitentes.
 
 ## 0:25–0:55 | Modelo y reglas
-**Pantalla:** mostrar brevemente el diagrama `img/clases.png` y la sección de reglas del documento de entrega.
+**Pantalla:** mostrar brevemente el diagrama `img/diagrama_clases.png` y la sección de reglas del documento de entrega.
 **Voz:** El modelo relaciona remitentes, paquetes, recolecciones, mensajeros, destinatarios y zonas de cobertura. La operación aplica ocho reglas de negocio, entre ellas límites físicos, cobertura, disponibilidad del mensajero, cálculo de tarifa y trazabilidad.
 
 ## 0:55–1:55 | Caso feliz y tarifa
